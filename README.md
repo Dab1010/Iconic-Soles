@@ -1,4 +1,4 @@
-# sneakermarketplace
+# Heart&Soles Marketplace
 
 This code provides a set of guidelines for buying and selling sneakers online. The code comprises two primary functions, namely addSneakers and buySneakers. The owner of the code can utilize the addSneakers function to add more sneakers to the market, while buyers can use the buySneakers function to purchase sneakers from the owner or other sellers.
 
