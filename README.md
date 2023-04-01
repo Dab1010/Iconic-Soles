@@ -1,6 +1,6 @@
 # Iconic Soles Marketplace
 
-This code provides a set of guidelines for buying and selling sneakers online. The code comprises two primary functions, namely addSneakers and buySneakers. The owner of the code can utilize the addSneakers function to add more sneakers to the market, while buyers can use the buySneakers function to purchase sneakers from the owner or other sellers.
+This code was written in Solidity and provides a set of guidelines for buying and selling sneakers online. The code comprises two primary functions, namely addSneakers and buySneakers. The owner of the code can utilize the addSneakers function to add more sneakers to the market, while buyers can use the buySneakers function to purchase sneakers from the owner or other sellers.
 
 The addSneakers function enables the owner to add new sneakers to the market, while the buySneakers function allows buyers to buy the sneakers they want. However, buyers must have sufficient "ether," to pay for the sneakers they wish to purchase.
 
