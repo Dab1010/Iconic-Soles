@@ -8,7 +8,7 @@ contract SneakerMarketplace {
     struct Sneaker {
         string brand;
         string model;
-        uint8 size;
+        string size; // Now a string to support half sizes, e.g., "9.5"
         address currentOwner;
         bool forSale;
         uint price;
@@ -17,7 +17,7 @@ contract SneakerMarketplace {
     mapping(uint => Sneaker) public sneakers;
 
     // Events for logging actions
-    event SneakerAdded(uint sneakerId, string brand, string model, uint8 size, uint price);
+    event SneakerAdded(uint sneakerId, string brand, string model, string size, uint price);
     event SneakerPurchased(uint sneakerId, address previousOwner, address newOwner, uint price);
     event SneakerForSaleUpdated(uint sneakerId, bool forSale, uint price);
 
@@ -26,7 +26,7 @@ contract SneakerMarketplace {
     }
 
     // Add one or more sneakers with an initial price
-    function addSneakers(string memory brand, string memory model, uint8 size, uint quantity, uint price) public {
+    function addSneakers(string memory brand, string memory model, string memory size, uint quantity, uint price) public {
         require(msg.sender == owner, "Only the owner can add sneakers to the marketplace.");
         for (uint i = 0; i < quantity; i++) {
             sneakers[sneakerCount] = Sneaker(brand, model, size, msg.sender, true, price);
