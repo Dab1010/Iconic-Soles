@@ -35,7 +35,7 @@ contract SneakerMarketplace {
         }
     }
 
-    // Purchase a sneaker if it is for sale and the sent value meets the price requirement
+    // Purchase a sneaker if it is for sale AND the sent value meets the price requirement
     function buySneakers(uint sneakerId) public payable {
         Sneaker storage sneaker = sneakers[sneakerId];
         require(sneaker.forSale, "Sneaker is not for sale.");
