@@ -1,36 +1,64 @@
+// SPDX-License-Identifier: MIT
 pragma solidity ^0.8.0;
 
 contract SneakerMarketplace {
     address public owner;
+    uint public sneakerCount = 0;
 
     struct Sneaker {
         string brand;
         string model;
         uint8 size;
-        address owner;
+        address currentOwner;
         bool forSale;
+        uint price;
     }
 
-    mapping(address => Sneaker) public sneakers;
+    mapping(uint => Sneaker) public sneakers;
+
+    // Events for logging actions
+    event SneakerAdded(uint sneakerId, string brand, string model, uint8 size, uint price);
+    event SneakerPurchased(uint sneakerId, address previousOwner, address newOwner, uint price);
+    event SneakerForSaleUpdated(uint sneakerId, bool forSale, uint price);
 
     constructor() {
         owner = msg.sender;
     }
 
-    function addSneakers(string memory brand, string memory model, uint8 size, uint quantity) public {
+    // Add one or more sneakers with an initial price
+    function addSneakers(string memory brand, string memory model, uint8 size, uint quantity, uint price) public {
         require(msg.sender == owner, "Only the owner can add sneakers to the marketplace.");
         for (uint i = 0; i < quantity; i++) {
-            address newSneaker = address(uint(keccak256(abi.encodePacked(block.timestamp, i))) % 10**20);
-            sneakers[newSneaker] = Sneaker(brand, model, size, msg.sender, true);
+            sneakers[sneakerCount] = Sneaker(brand, model, size, msg.sender, true, price);
+            emit SneakerAdded(sneakerCount, brand, model, size, price);
+            sneakerCount++;
         }
     }
 
-    function buySneakers(address sneakerId) public payable {
+    // Purchase a sneaker if it is for sale and the sent value meets the price requirement
+    function buySneakers(uint sneakerId) public payable {
         Sneaker storage sneaker = sneakers[sneakerId];
         require(sneaker.forSale, "Sneaker is not for sale.");
-        require(msg.value >= 100 ether, "Insufficient ether to purchase sneakers.");
+        require(msg.value >= sneaker.price, "Insufficient ether to purchase sneakers.");
+
+        address previousOwner = sneaker.currentOwner;
+
+        // Transfer funds to the previous owner
+        payable(previousOwner).transfer(msg.value);
+
+        // Update sneaker details: new owner and mark it as not for sale
+        sneaker.currentOwner = msg.sender;
         sneaker.forSale = false;
-        sneaker.owner.transfer(msg.value);
+
+        emit SneakerPurchased(sneakerId, previousOwner, msg.sender, sneaker.price);
+    }
+
+    // Allow the current owner to update the sale status and price of a sneaker
+    function setForSale(uint sneakerId, bool forSale, uint price) public {
+        Sneaker storage sneaker = sneakers[sneakerId];
+        require(msg.sender == sneaker.currentOwner, "Only the current owner can update the sale status.");
+        sneaker.forSale = forSale;
+        sneaker.price = price;
+        emit SneakerForSaleUpdated(sneakerId, forSale, price);
     }
 }
-
